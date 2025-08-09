@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cassino Online</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            padding: 10px;
+            text-align: center;
+            background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+            position: relative;
+        }
+        
+        .logo {
+            height: 50px;
+        }
+        
+        .banner-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            height: 180px;
+        }
+        
+        .banner-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 400%;
+            height: 100%;
+        }
+        
+        .banner-slide {
+            width: 25%;
+            height: 100%;
+        }
+        
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .promo-container {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+        }
+        
+        .promo-item {
+            margin: 0 5px;
+        }
+        
+        .promo-item img {
+            height: 80px;
+            width: auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            padding: 15px 0;
+            font-size: 22px;
+            background: linear-gradient(90deg, #f12711, #f5af19);
+            margin: 10px 0;
+            border-radius: 5px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .game-item {
+            width: 48%;
+            margin: 1%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        
+        .game-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .game-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .auth-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .auth-box {
+            background: linear-gradient(145deg, #1e3c72, #2a5298);
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotateY(0deg); }
+            50% { transform: translateY(-20px) rotateY(5deg); }
+            100% { transform: translateY(0px) rotateY(0deg); }
+        }
+        
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0.1),
+                rgba(255,255,255,0)
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(30deg) translate(-30%, -30%); }
+            100% { transform: rotate(30deg) translate(30%, 30%); }
+        }
+        
+        .auth-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #f5af19;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .auth-tab.active {
+            background: #f12711;
+            font-weight: bold;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .captcha-code {
+            flex: 1;
+            background: #fff;
+            color: #000;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .captcha-refresh {
+            background: #f5af19;
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .auth-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #f12711, #f5af19);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .auth-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(241, 39, 17, 0.4);
+        }
+        
+        .close-auth {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f12711;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 100;
+        }
+        
+        .nav-button {
+            text-align: center;
+            width: 20%;
+        }
+        
+        .nav-button img {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .nav-button span {
+            display: block;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .cs-button {
+            position: fixed;
+            right: 15px;
+            bottom: 70px;
+            background: linear-gradient(90deg, #f12711, #f5af19);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 99;
+        }
+        
+        .cs-button img {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .user-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .login-btn, .register-btn {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .login-btn {
+            background: linear-gradient(90deg, #f12711, #f5af19);
+            color: white;
+        }
+        
+        .register-btn {
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            color: white;
+        }
+        
+        .jackpot {
+            display: none;
+            background: linear-gradient(90deg, #f12711, #f5af19);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            animation: pulse 1s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { box-shadow: 0 0 5px rgba(241, 39, 17, 0.5); }
+            to { box-shadow: 0 0 20px rgba(245, 175, 25, 0.8); }
+        }
+        
+        .deposit-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .deposit-box {
+            background: linear-gradient(145deg, #1e3c72, #2a5298);
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .deposit-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #f5af19;
+        }
+        
+        .deposit-options {
+            margin-bottom: 20px;
+        }
+        
+        .deposit-option {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .deposit-option:hover {
+            background: rgba(241, 39, 17, 0.5);
+        }
+        
+        .deposit-option.active {
+            background: linear-gradient(90deg, #f12711, #f5af19);
+            font-weight: bold;
+        }
+        
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .wallet-address {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 14px;
+        }
+        
+        .upload-container {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .upload-label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .upload-input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, #f12711, #f5af19);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .success-animation {
+            text-align: center;
+            display: none;
+        }
+        
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            display: block;
+            animation: scale 0.5s ease-in-out;
+        }
+        
+        @keyframes scale {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #f5af19;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/t7/images/public/logo-01.png" alt="Logo" class="logo">
+    </div>
+    
+    <div class="user-status">
+        <div class="login-btn">ENTRAR</div>
+        <div class="register-btn">REGISTRAR</div>
+        <div class="jackpot">JACKPOT: <span id="jackpot-amount">12345</span> USDT</div>
+    </div>
+    
+    <div class="banner-container">
+        <div class="banner-slider" id="bannerSlider">
+            <div class="banner-slide">
+                <img src="https://iili.io/Fis7gkB.md.png" alt="Banner 1">
+            </div>
+            <div class="banner-slide">
+                <img src="https://iili.io/FisaXVe.md.png" alt="Banner 2">
+            </div>
+            <div class="banner-slide">
+                <img src="https://iili.io/Fisaysn.md.png" alt="Banner 3">
+            </div>
+            <div class="banner-slide">
+                <img src="https://iili.io/FiscXmN.md.png" alt="Banner 4">
+            </div>
+        </div>
+    </div>
+    
+    <div class="promo-container">
+        <div class="promo-item">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/10win/kingkong/1752925123351osqe4.gif" alt="Promo 1">
+        </div>
+        <div class="promo-item">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/10win/kingkong/1752925130733dh9ix.gif" alt="Promo 2">
+        </div>
+        <div class="promo-item">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/10win/kingkong/1752925145865ycmu2.gif" alt="Promo 3">
+        </div>
+    </div>
+    
+    <div class="section-title">HOT GAME</div>
+    
+    <div class="game-container">
+        <div class="game-item" data-link="https://backckc.bet/game/action/2197">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/game_icon/zs_pg_hpg_fortune-rabbit2_.png" alt="Game 1">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2196">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/game_icon/zs_pg_hpg_fortune-tiger-fofo_.png" alt="Game 2">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2278">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/game_icon/zs_pg_hpg_fortune-dragon-fofo_.png" alt="Game 3">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2196">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/game_icon/zs_pg_hpg_fortune-tiger3_.png" alt="Game 4">
+        </div>
+    </div>
+    
+    <div class="section-title">PG SOFT</div>
+    
+    <div class="game-container">
+        <div class="game-item" data-link="https://backckc.bet/game/action/2196">
+            <img src="https://oss.cloudofs.com/images/poster/sv9f1739435358770752.jpeg" alt="PG Game 1">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2197">
+            <img src="https://oss.cloudofs.com/images/poster/p4lq1739435304981665.jpeg" alt="PG Game 2">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2278">
+            <img src="https://oss.cloudofs.com/images/poster/fb0p1739435371564370.jpeg" alt="PG Game 3">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/4953">
+            <img src="https://oss.cloudofs.com/images/poster/3hk41739435434531556.png" alt="PG Game 4">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2204">
+            <img src="https://oss.cloudofs.com/images/gameicon/PG_Wild_Bandito.jpg" alt="PG Game 5">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2218">
+            <img src="https://oss.cloudofs.com/images/gameicon/PG_Treasures_Of_Aztec.jpg" alt="PG Game 6">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/4959">
+            <img src="https://oss.cloudofs.com/images/gameicon/PG_Rio_Fantasia.png" alt="PG Game 7">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/2214">
+            <img src="https://oss.cloudofs.com/images/gameicon/PG_Mahjong_Ways_2.jpg" alt="PG Game 8">
+        </div>
+    </div>
+    
+    <div class="section-title">PRAGMATIC</div>
+    
+    <div class="game-container">
+        <div class="game-item" data-link="https://backckc.bet/game/action/5496">
+            <img src="https://oss.cloudofs.com/images/gameicon/Gates_of_Olympus.jpg" alt="Pragmatic Game 1">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/5487">
+            <img src="https://oss.cloudofs.com/images/gameicon/Gates_of_Olympus_1000.jpg" alt="Pragmatic Game 2">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/5490">
+            <img src="https://oss.cloudofs.com/images/gameicon/Sweet_Bonanza.jpg" alt="Pragmatic Game 3">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/5038">
+            <img src="https://oss.cloudofs.com/images/gameicon/Sweet_Bonanza_1000.jpg" alt="Pragmatic Game 4">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/5117">
+            <img src="https://oss.cloudofs.com/images/gameicon/PP_Starlight_Christmas.jpg" alt="Pragmatic Game 5">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/5739">
+            <img src="https://oss.cloudofs.com/images/gameicon/Starlight_Princess_1000.jpg" alt="Pragmatic Game 6">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/5171">
+            <img src="https://oss.cloudofs.com/images/gameicon/PP_Twilight_Princess.jpg" alt="Pragmatic Game 7">
+        </div>
+        <div class="game-item" data-link="https://backckc.bet/game/action/4996">
+            <img src="https://oss.cloudofs.com/images/gameicon/Buffalo_King.jpg" alt="Pragmatic Game 8">
+        </div>
+    </div>
+    
+    <div class="cs-button">
+        <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/t7/images/public/logo-01.png" alt="CS">
+    </div>
+    
+    <div class="nav-buttons">
+        <div class="nav-button">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/t7/images/layout/tableBar/tableBar_1s.png" alt="Home">
+            <span>INÍCIO</span>
+        </div>
+        <div class="nav-button">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/t7/images/layout/tableBar/tableBar_2-2.png" alt="Ranking">
+            <span>RANKING</span>
+        </div>
+        <div class="nav-button">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/t7/images/layout/tableBar/tableBar_3.png" alt="Deposit">
+            <span>DEPÓSITO</span>
+        </div>
+        <div class="nav-button">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/t7/images/layout/tableBar/tableBar_4.png" alt="Event">
+            <span>EVENTO</span>
+        </div>
+        <div class="nav-button">
+            <img src="https://dudvdg1kabrjm.cloudfront.net/resource_collection/t7/images/layout/tableBar/tableBar_5.png" alt="Info">
+            <span>INFO</span>
+        </div>
+    </div>
+    
+    <div class="auth-container" id="authContainer">
+        <div class="auth-box">
+            <div class="close-auth" id="closeAuth">X</div>
+            <div class="auth-title">BEM-VINDO</div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">ENTRAR</div>
+                <div class="auth-tab" data-tab="register">REGISTRAR</div>
+            </div>
+            
+            <div class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="login-phone">NÚMERO DE TELEFONE</label>
+                    <input type="text" id="login-phone" placeholder="Digite seu número de telefone">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">SENHA</label>
+                    <input type="password" id="login-password" placeholder="Digite sua senha">
+                </div>
+                <div class="captcha-container">
+                    <div class="captcha-code" id="login-captcha">A7B9</div>
+                    <button class="captcha-refresh" id="refresh-login-captcha">↻</button>
+                </div>
+                <div class="form-group">
+                    <label for="login-captcha-input">DIGITE O CÓDIGO</label>
+                    <input type="text" id="login-captcha-input" placeholder="Digite o código acima">
+                </div>
+                <button class="auth-button" id="login-button">ENTRAR</button>
+            </div>
+            
+            <div class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="register-phone">NÚMERO DE TELEFONE</label>
+                    <input type="text" id="register-phone" placeholder="Digite seu número de telefone">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">SENHA</label>
+                    <input type="password" id="register-password" placeholder="Crie uma senha">
+                </div>
+                <div class="form-group">
+                    <label for="register-usdt">ENDEREÇO USDT (TRON-20)</label>
+                    <input type="text" id="register-usdt" placeholder="Digite seu endereço USDT">
+                </div>
+                <div class="captcha-container">
+                    <div class="captcha-code" id="register-captcha">X3Y5</div>
+                    <button class="captcha-refresh" id="refresh-register-captcha">↻</button>
+                </div>
+                <div class="form-group">
+                    <label for="register-captcha-input">DIGITE O CÓDIGO</label>
+                    <input type="text" id="register-captcha-input" placeholder="Digite o código acima">
+                </div>
+                <button class="auth-button" id="register-button">REGISTRAR</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="deposit-container" id="depositContainer">
+        <div class="deposit-box">
+            <div class="close-auth" id="closeDeposit">X</div>
+            <div class="deposit-title">DEPÓSITO USDT</div>
+            
+            <div class="deposit-options">
+                <div class="deposit-option" data-amount="30">30 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+                <div class="deposit-option" data-amount="50">50 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+                <div class="deposit-option" data-amount="100">100 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+                <div class="deposit-option" data-amount="200">200 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+                <div class="deposit-option" data-amount="500">500 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+                <div class="deposit-option" data-amount="1000">1000 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+                <div class="deposit-option" data-amount="5000">5000 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+                <div class="deposit-option" data-amount="10000">10000 USDT 【Bônus de primeiro depósito 70% e TO 5x】</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="custom-amount">OU DIGITE O VALOR (Mínimo 30 USDT)</label>
+                <input type="number" id="custom-amount" placeholder="Digite o valor do depósito">
+            </div>
+            
+            <button class="submit-btn" id="confirm-deposit">CONFIRMAR DEPÓSITO</button>
+            
+            <div class="qr-container" id="qrContainer">
+                <div class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?data=TCYA9YzMGgiGKvgJfxs6ZhnDW5dAw8uvWd%22&size=220x220&margin=0" alt="QR Code">
+                </div>
+                <div class="wallet-address">TCYA9YzMGgiGKvgJfxs6ZhnDW5dAw8uvWd</div>
+                
+                <div class="upload-container" id="uploadContainer">
+                    <label class="upload-label">ENVIE O COMPROVANTE DE TRANSFERÊNCIA</label>
+                    <input type="file" class="upload-input" id="proof-upload">
+                    <button class="submit-btn" id="submit-proof">ENVIAR COMPROVANTE</button>
+                </div>
+            </div>
+            
+            <div class="success-animation" id="successAnimation">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" stroke="#4CAF50" stroke-width="2"/>
+                    <path class="checkmark__check" fill="none" stroke="#4CAF50" stroke-width="2" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <div class="success-message">DEPÓSITO ENVIADO COM SUCESSO!</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Banner slider
+        let currentBanner = 0;
+        const bannerSlider = document.getElementById('bannerSlider');
+        const banners = document.querySelectorAll('.banner-slide');
+        const totalBanners = banners.length;
+        
+        function slideBanner() {
+            currentBanner = (currentBanner + 1) % totalBanners;
+            bannerSlider.style.transform = `translateX(-${currentBanner * 25}%)`;
+        }
+        
+        setInterval(slideBanner, 3000);
+        
+        // Auth system
+        const authContainer = document.getElementById('authContainer');
+        const loginBtn = document.querySelector('.login-btn');
+        const registerBtn = document.querySelector('.register-btn');
+        const closeAuth = document.getElementById('closeAuth');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        const jackpot = document.querySelector('.jackpot');
+        
+        // Game items redirect to auth/deposit
+        const gameItems = document.querySelectorAll('.game-item');
+        
+        // Deposit system
+        const depositContainer = document.getElementById('depositContainer');
+        const closeDeposit = document.getElementById('closeDeposit');
+        const depositOptions = document.querySelectorAll('.deposit-option');
+        const confirmDeposit = document.getElementById('confirm-deposit');
+        const qrContainer = document.getElementById('qrContainer');
+        const uploadContainer = document.getElementById('uploadContainer');
+        const submitProof = document.getElementById('submit-proof');
+        const successAnimation = document.getElementById('successAnimation');
+        
+        // Jackpot counter
+        let jackpotAmount = 12345;
+        const jackpotElement = document.getElementById('jackpot-amount');
+        
+        // Simulate logged in state (for demo)
+        let loggedIn = false;
+        
+        // Generate random captcha
+        function generateCaptcha() {
+            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let captcha = '';
+            for (let i = 0; i < 4; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return captcha;
+        }
+        
+        // Update captcha codes
+        document.getElementById('refresh-login-captcha').addEventListener('click', function() {
+            document.getElementById('login-captcha').textContent = generateCaptcha();
+        });
+        
+        document.getElementById('refresh-register-captcha').addEventListener('click', function() {
+            document.getElementById('register-captcha').textContent = generateCaptcha();
+        });
+        
+        // Tab switching
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                authTabs.forEach(t => t.classList.remove('active'));
+                authForms.forEach(f => f.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(tabId + 'Form').classList.add('active');
+            });
+        });
+        
+        // Login/Register buttons
+        loginBtn.addEventListener('click', function() {
+            authContainer.style.display = 'flex';
+            document.getElementById('login-captcha').textContent = generateCaptcha();
+        });
+        
+        registerBtn.addEventListener('click', function() {
+            authContainer.style.display = 'flex';
+            document.querySelector('.auth-tab[data-tab="register"]').click();
+            document.getElementById('register-captcha').textContent = generateCaptcha();
+        });
+        
+        closeAuth.addEventListener('click', function() {
+            authContainer.style.display = 'none';
+        });
+        
+        // Login/Register functionality
+        document.getElementById('login-button').addEventListener('click', function() {
+            const phone = document.getElementById('login-phone').value;
+            const password = document.getElementById('login-password').value;
+            const captchaInput = document.getElementById('login-captcha-input').value;
+            const captcha = document.getElementById('login-captcha').textContent;
+            
+            if (!phone || !password || !captchaInput) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            if (captchaInput !== captcha) {
+                alert('Código de verificação incorreto!');
+                return;
+            }
+            
+            // Simulate successful login
+            loggedIn = true;
+            authContainer.style.display = 'none';
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+            jackpot.style.display = 'block';
+            
+            // Start jackpot counter
+            const jackpotInterval = setInterval(() => {
+                jackpotAmount += Math.floor(Math.random() * 100);
+                if (jackpotAmount > 9999999) jackpotAmount = 12345;
+                jackpotElement.textContent = jackpotAmount.toLocaleString();
+            }, 100);
+        });
+        
+        document.getElementById('register-button').addEventListener('click', function() {
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const usdt = document.getElementById('register-usdt').value;
+            const captchaInput = document.getElementById('register-captcha-input').value;
+            const captcha = document.getElementById('register-captcha').textContent;
+            
+            if (!phone || !password || !usdt || !captchaInput) {
+                alert('Por favor, preencha todos os campos!');
+                return;
+            }
+            
+            if (captchaInput !== captcha) {
+                alert('Código de verificação incorreto!');
+                return;
+            }
+            
+            // Simulate successful registration
+            loggedIn = true;
+            authContainer.style.display = 'none';
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+            jackpot.style.display = 'block';
+            
+            // Start jackpot counter
+            const jackpotInterval = setInterval(() => {
+                jackpotAmount += Math.floor(Math.random() * 100);
+                if (jackpotAmount > 9999999) jackpotAmount = 12345;
+                jackpotElement.textContent = jackpotAmount.toLocaleString();
+            }, 100);
+        });
+        
+        // Game items click handler
+        gameItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (!loggedIn) {
+                    authContainer.style.display = 'flex';
+                } else {
+                    depositContainer.style.display = 'flex';
+                }
+            });
+        });
+        
+        // CS button click
+        document.querySelector('.cs-button').addEventListener('click', function() {
+            window.open('https://www.zendesk.com/blog/6-tips-best-online-customer-support/', '_blank');
+        });
+        
+        // Deposit system
+        closeDeposit.addEventListener('click', function() {
+            depositContainer.style.display = 'none';
+            qrContainer.style.display = 'none';
+            uploadContainer.style.display = 'none';
+            successAnimation.style.display = 'none';
+        });
+        
+        depositOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                depositOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('custom-amount').value = this.getAttribute('data-amount');
+            });
+        });
+        
+        document.getElementById('custom-amount').addEventListener('input', function() {
+            depositOptions.forEach(opt => opt.classList.remove('active'));
+        });
+        
+        confirmDeposit.addEventListener('click', function() {
+            const selectedOption = document.querySelector('.deposit-option.active');
+            const customAmount = document.getElementById('custom-amount').value;
+            let amount = 0;
+            
+            if (selectedOption) {
+                amount = selectedOption.getAttribute('data-amount');
+            } else if (customAmount && parseInt(customAmount) >= 30) {
+                amount = customAmount;
+            } else {
+                alert('Por favor, selecione um valor válido (mínimo 30 USDT)');
+                return;
+            }
+            
+            qrContainer.style.display = 'block';
+            uploadContainer.style.display = 'block';
+        });
+        
+        submitProof.addEventListener('click', function() {
+            const fileInput = document.getElementById('proof-upload');
+            
+            if (!fileInput.files.length) {
+                alert('Por favor, selecione um arquivo de comprovante');
+                return;
+            }
+            
+            // Simulate upload success
+            uploadContainer.style.display = 'none';
+            successAnimation.style.display = 'block';
+            
+            // Close after 3 seconds
+            setTimeout(() => {
+                depositContainer.style.display = 'none';
+                successAnimation.style.display = 'none';
+                qrContainer.style.display = 'none';
+            }, 3000);
+        });
+        
+        // Initialize captchas
+        document.getElementById('login-captcha').textContent = generateCaptcha();
+        document.getElementById('register-captcha').textContent = generateCaptcha();
+    </script>
+</body>
+</html>
